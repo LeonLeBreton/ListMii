@@ -25,7 +25,10 @@ def cls():  # Fonction cls/clear
 
 
 def pause():  # Fonction pause/read
-    os.system("Pause" if os.name == "nt" else "read -s -n 1 -p ""Appuyer sur une touche pour continuer"" &&  echo """)
+    if os.name=="nt":
+        os.system("pause")
+    else:
+        useless=input("Appuyer sur Entrer pour continuer")
 
 
 def hash_file(hashfile):  # Permet de comparer des fichiers
@@ -206,9 +209,11 @@ def menu():  # Menu du programme
             choice = input("Merci de faire un choix (1~3): ")
             if choice == "1":
                 print("")
+                incorrect = False
                 listmii()
             elif choice == "2":
                 print("")
+                incorrect = False
                 update()
             elif choice == "3":
                 shutil.rmtree(tmp)
@@ -216,38 +221,68 @@ def menu():  # Menu du programme
             else:
                 incorrect=True
 
-#S'exécute seulement au démarrage
-colorama_init()
 
+#S'exécute seulement au démarrage
+def prgmboot():
+    if os.name=="nt":
+        letters= ["A","B","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+        goodletter= []
+        for i in letters:
+            try:
+                os.chdir(i+":/Nintendo 3ds")
+                goodletter.append(i)
+            except FileNotFoundError:
+                pass
+        if len(goodletter)==0:
+            print(Fore.RED + "Aucune carte SD de 3ds détecté, brancher la SD puis appuyer sur Entrer")
+            print(Style.RESET_ALL)
+            pause()
+            return "empty"
+        elif len(goodletter)>=2:
+            print("Plusieurs carte SD ont été détecter :"," et ".join(goodletter))
+            while True:
+                goodsd=input("Merci de choisir la lettre de la SD que vous voulez : ")
+                if not goodsd=="C":
+                    try:
+                        os.chdir(goodsd+":/Nintendo 3ds")
+                        break
+                    except FileNotFoundError:
+                        cls()
+                        print(Fore.RED+"Merci de choisir dans une des lettres proposé")
+                        print(Style.RESET_ALL)
+                else:
+                    cls()
+                    print(Fore.RED + "Le disque C est le disque de Windows")
+                    print(Style.RESET_ALL)
+            return goodsd
+        else:
+            return goodletter[0]
+    else:
+        while True:
+            unix=input("Vous n'avez pas Windows NT, merci de renseigner manuellement le chemin vers votre carte SD : ")
+            try:
+                os.chdir(unix + ":/Nintendo 3ds")
+                break
+            except FileNotFoundError:
+                cls()
+                print(Fore.RED + "Ce chemin n'est pas celui d'une carte SD de 3ds")
+                print(Style.RESET_ALL)
+        return unix
+
+
+colorama_init()
+tmp = tempfile.gettempdir() + "\\listmii"
 tokengithub = "token " + ""  # Mettre le token Github entre les guillemet
 tokenpastebin = ""  # Mettre Token Pastebin entre guillemet
 
-if 'PROMPT' in os.environ:
-    print(Fore.RED + "Merci de lancer le fichier en double cliquant dessus et non via un système de commande")
-    print(Style.RESET_ALL)
-    pause()
-    exit()
+
+directory="empty"
+while directory=="empty":
+    directory=prgmboot()
+os.chdir(directory+":/")
+if os.path.exists(tmp):
+    shutil.rmtree(tmp)
+    os.mkdir(tmp)
 else:
-    if os.name=="nt":
-        if os.getcwd()[0]=="C":
-            print(Fore.RED + "Merci de déplacer le programme dans la carte sd et de le réexécuter")
-            print(Style.RESET_ALL)
-            pause()
-            exit()
-    else:
-        print("Impossible de vérifier automatiquement si le programme est bien sur la carte sd car le système d'exploitation actuel n'est pas windows NT\n Merci de vous assurez avant de continuer si le programme est bien sur la carte sd de la 3ds")
-        pause()
-    if os.path.isdir('Nintendo 3ds'):
-        tmp = tempfile.gettempdir()+"\\listmii"
-        if os.path.exists(tmp):
-            shutil.rmtree(tmp)
-            os.mkdir(tmp)
-        else:
-            os.mkdir(tmp)
-        menu()
-    else:
-        print(Fore.RED + "Merci de mettre ce programme sur la carte sd de la 3ds ou de la 2ds puis de le redémarrer\nSi le programme est bien sur la carte sd de la 3ds, assurez vous que vous avez déjà démarrer cette console avec la carte sd")
-        print(Style.RESET_ALL)
-        os.system("cd")
-        pause()
-        exit()
+    os.mkdir(tmp)
+menu()
