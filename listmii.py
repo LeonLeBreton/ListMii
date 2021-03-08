@@ -82,15 +82,15 @@ def listmii():  # Programme Listmii
     responsetest = response
     if responsetest.ok:
         pyperclip.copy(response.text)
-        print("Fichier sauvegarder, merci d'envoyer ce lien pastbin", response.text,
-              "(il est copier dans le presse papier)")
+        print("Fichier sauvegardé, merci d'envoyer ce lien pastebin", response.text,
+              "(il est copié dans le presse papier)")
         pause()
     else:
-        print("Merci de copier la globalité du fichier à la personne qui vous là demandé")
+        print("Merci de copier la globalité du fichier à la personne qui vous l'a demandée")
         print("Erreur :", response, response.text)
         pause()
         os.startfile(tmpfile)
-        print("Une fois le fichier donné, appuyer sur une touche")
+        print("Une fois le fichier donné, appuyez sur une touche")
         pause()
     f.close()  # Nettoyage du fichier
     os.remove(tmpfile)
@@ -126,18 +126,18 @@ def downloadfromgithub(link,output):  # fonction pour télécharger depuis Githu
 
 
 def update(): # Programme de Mise à Jour de fichier
-    print("Vérification de l'installation actuel de Luma")
+    print("Vérification de l'installation actuelle de Luma")
     downloadfromgithub("https://api.github.com/repos/LumaTeam/Luma3DS/releases", False)
     if os.path.isfile("boot.firm"):
         if hash_file("boot.firm") == "a130c778b21c81af20f2909c6d9beb4a9a9deccc":
-            print(Fore.GREEN + "Dernière version de Luma déjà installé !")
+            print(Fore.GREEN + "Dernière version de Luma déjà installée !")
             print(Style.RESET_ALL)
             pause()
         else:
             good=False
             while not good:
-                print("Version de Luma inconnu ou dépassé")
-                updateluma=input("Souhaitez vous mettre à jour Luma ? (Oui/Non) : ")
+                print("Version de Luma inconnue ou dépassée")
+                updateluma=input("Souhaitez-vous mettre à jour Luma ? (Oui/Non) : ")
                 if updateluma.lower()=="oui":
                     shutil.copyfile(tmp+"\\boot.firm", "boot.firm")
                     print(Fore.GREEN+"Luma a bien été mise à jour !")
@@ -145,7 +145,7 @@ def update(): # Programme de Mise à Jour de fichier
                     pause()
                     good=True
                 elif updateluma.lower()=="non":
-                    print("Luma n'a pas été mise à jour")
+                    print("Luma n'a pas été mis à jour")
                     pause()
                     good=True
                 else:
@@ -155,7 +155,7 @@ def update(): # Programme de Mise à Jour de fichier
     else:
         good=False
         while not good:
-            updateluma= input("Aucun boot.firm trouvé, sans boot.firm, la console peut ne pas démarrer.\nVoulez vous installer la dernière version de Luma ? (Oui/Non) : ")
+            updateluma= input("Aucun boot.firm trouvé, sans boot.firm, la console peut ne pas démarrer.\nVoulez-vous installer la dernière version de Luma ? (Oui/Non) : ")
             if updateluma.lower()=="oui":
                 shutil.copyfile(tmp+"\\boot.firm", "boot.firm")
                 print(Fore.GREEN+"Luma a bien été installé !")
@@ -171,7 +171,7 @@ def update(): # Programme de Mise à Jour de fichier
                 print(Style.RESET_ALL)
     good=False
     while not good:
-        godmode=input("Souhaitez vous installer la dernière version de Godmode9 ? (Oui/Non) : ")
+        godmode=input("Souhaitez-vous installer la dernière version de GodMode9 ? (Oui/Non) : ")
         if godmode.lower()=="oui":
             mkdir("luma")
             mkdir("luma/payloads")
@@ -234,21 +234,21 @@ def prgmboot():
             except FileNotFoundError:
                 pass
         if len(goodletter)==0:
-            print(Fore.RED + "Aucune carte SD de 3ds détecté, brancher la SD puis appuyer sur Entrer")
+            print(Fore.RED + "Aucune carte SD de 3ds détectée, branchez la carte SD puis appuyez sur Entrée")
             print(Style.RESET_ALL)
             pause()
             return "empty"
         elif len(goodletter)>=2:
-            print("Plusieurs carte SD ont été détecter :"," et ".join(goodletter))
+            print("Plusieurs cartes SD ont été détectées :"," et ".join(goodletter))
             while True:
-                goodsd=input("Merci de choisir la lettre de la SD que vous voulez : ")
+                goodsd=input("Merci de choisir la lettre de la carte SD que vous voulez utiliser : ")
                 if not goodsd=="C":
                     try:
                         os.chdir(goodsd+":/Nintendo 3ds")
                         break
                     except FileNotFoundError:
                         cls()
-                        print(Fore.RED+"Merci de choisir dans une des lettres proposé")
+                        print(Fore.RED+"Merci de choisir dans une des lettres proposées")
                         print(Style.RESET_ALL)
                 else:
                     cls()
